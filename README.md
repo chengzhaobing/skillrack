@@ -33,16 +33,31 @@ npx skillrack add https://github.com/chengzhaobing/skillrack --skill motion-reci
 常用变体：
 
 ```bash
-npx skillrack add motion-recipes --to codebuddy     # 指定宿主：codebuddy | claude | cursor | agents
-npx skillrack add motion-recipes --global           # 装到用户目录，所有项目可用
-npx skillrack add motion-recipes --to ./shared/skills   # 自定义目录
-npx skillrack add motion-recipes --force            # 覆盖同名目录
-npx skillrack list                                  # 查看全部技能
-npx skillrack info motion-recipes                   # 查看详情
-npx skillrack remove motion-recipes                 # 卸载
+npx skillrack add motion-recipes --agent claude,codebuddy   # 跳过交互，直接指定宿主
+npx skillrack add motion-recipes --agent detected           # 装到本机已检测到的全部宿主
+npx skillrack add motion-recipes --agent claude --global    # 用户级：所有项目可用
+npx skillrack add motion-recipes --to ./shared/skills       # 自定义目录
+npx skillrack add motion-recipes --force                    # 覆盖同名目录
+npx skillrack agents                                        # 查看 77 个宿主与检测结果
+npx skillrack list                                          # 查看全部技能
+npx skillrack info motion-recipes                           # 查看详情
+npx skillrack remove motion-recipes                         # 卸载（项目级 + 用户级都搜）
 ```
 
-默认安装位置：项目中已存在的 `.codebuddy/skills`、`.claude/skills`、`.cursor/skills`、`.agents/skills`，命中哪个装哪个；都没有则装到 `.codebuddy/skills`。安装完成后重启宿主会话即可加载。
+不传 `--agent` / `--to` 时会进入交互式多选：
+
+```
+  ? 选择安装目标 · motion-recipes  项目级 ./
+  ────────────────────────────────────────────────────────
+  ❯ ○ CodeBuddy     .codebuddy/skills    detected
+    ○ Claude Code   .claude/skills       detected
+    ○ Cursor        .agents/skills
+  ↑↓ 移动 · Space 勾选 · A 全选 · N 清空 · Enter 确认 · Q 取消   已选 0
+```
+
+默认一个都不勾，**没选就按 Enter 等于放弃安装，不写任何文件**。已检测到的宿主排在最前并标注 `detected`。
+
+装完只需新开一个对话（或重启宿主）即可加载，不需要改任何配置。
 
 ## 仓库结构
 

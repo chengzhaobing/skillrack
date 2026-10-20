@@ -490,6 +490,7 @@
         <li><b>0</b> 依赖</li>
         <li><b>Node 18+</b> 即可</li>
         <li><b>1</b> 个技能</li>
+        <li><b>77</b> 个宿主</li>
         <li><b>MIT</b> 许可</li>
       </ul>
     </section>
@@ -531,13 +532,23 @@
 
       <section class="panel" role="tabpanel" id="panel-start" aria-labelledby="tab-start" tabindex="0" hidden>
         <h2>快速开始</h2>
-        <p class="hint">不用全局安装，npx 每次取最新版。</p>
+        <p class="hint">不用全局安装，npx 每次取最新版；不传参数就是交互式选择。</p>
         <ol class="steps">
-          <li>在项目根目录执行 <code>npx skillrack add motion-recipes</code>，CLI 会打印像素字横幅与落位结果。</li>
-          <li>默认自动探测 <code>.codebuddy</code> / <code>.claude</code> / <code>.cursor</code> / <code>.agents</code>，命中哪个装哪个。</li>
-          <li>装到别的宿主：<code>--to claude</code>；装到全局：<code>--global</code>；装到自定义目录：<code>--to ./shared/skills</code>。</li>
-          <li>重启宿主会话，技能即被加载；不想要了就 <code>npx skillrack remove motion-recipes</code>。</li>
+          <li>在项目根目录执行 <code>npx skillrack add motion-recipes</code>，CLI 打印像素字横幅后进入多选。</li>
+          <li>用 ↑↓ 移动、Space 勾选要装的宿主（已装的会标 <code>detected</code>）；默认一个都不勾。</li>
+          <li>Enter 确认；若一个都没勾，直接放弃安装，不写任何文件。</li>
+          <li>脚本 / CI 场景用 <code>--agent claude,codex</code> 跳过交互，<code>--agent detected</code> 装到全部已检测宿主。</li>
+          <li>新开一个对话即可加载；卸载用 <code>npx skillrack remove motion-recipes</code>。</li>
         </ol>
+
+        <p class="label" style="margin-top:20px">选择界面</p>
+        <pre><span class="c">?</span> 选择安装目标 · motion-recipes  项目级 ./
+<span class="c">────────────────────────────────────────────────────────</span>
+<span class="k">❯</span> ◉ CodeBuddy     .codebuddy/skills    <span class="s">detected</span>
+  ○ Claude Code   .claude/skills       <span class="s">detected</span>
+  ○ Cursor        .agents/skills
+  ○ Codex         .agents/skills
+<span class="c">↑↓ 移动 · Space 勾选 · A 全选 · N 清空 · Enter 确认 · Q 取消</span>   已选 1</pre>
       </section>
 
       <section class="panel" role="tabpanel" id="panel-cmd" aria-labelledby="tab-cmd" tabindex="0" hidden>
@@ -550,11 +561,12 @@
             </thead>
             <tbody>
               <tr><td><code>skillrack list</code></td><td>列出全部技能（默认命令）</td></tr>
-              <tr><td><code>skillrack add &lt;skill&gt;</code></td><td>安装本仓库技能</td></tr>
+              <tr><td><code>skillrack add &lt;skill&gt;</code></td><td>安装本仓库技能（交互式选宿主）</td></tr>
               <tr><td><code>skillrack add &lt;repo&gt; --skill &lt;name&gt;</code></td><td>从 GitHub 仓库安装</td></tr>
               <tr><td><code>skillrack add &lt;path&gt;</code></td><td>安装本地技能目录</td></tr>
+              <tr><td><code>skillrack agents</code></td><td>列出 77 个宿主与本机检测结果</td></tr>
               <tr><td><code>skillrack info &lt;skill&gt;</code></td><td>详情、体积、安装命令</td></tr>
-              <tr><td><code>skillrack remove &lt;skill&gt;</code></td><td>卸载</td></tr>
+              <tr><td><code>skillrack remove &lt;skill&gt;</code></td><td>卸载（项目级 + 用户级都搜）</td></tr>
             </tbody>
           </table>
         </div>
@@ -566,9 +578,10 @@
               <tr><th>选项</th><th>说明</th></tr>
             </thead>
             <tbody>
+              <tr><td><code>--agent, -a</code></td><td>直接指定宿主，逗号分隔；<code>all</code> / <code>detected</code> 为特殊值</td></tr>
+              <tr><td><code>--to, -t</code></td><td>装到自定义目录，跳过宿主选择</td></tr>
+              <tr><td><code>--global, -g</code></td><td>用宿主的用户级目录，所有项目可用</td></tr>
               <tr><td><code>--skill, -s</code></td><td>指定技能名（远程仓库必填）</td></tr>
-              <tr><td><code>--to, -t</code></td><td>codebuddy / claude / cursor / agents 或自定义路径</td></tr>
-              <tr><td><code>--global, -g</code></td><td>装到用户目录，所有项目可用</td></tr>
               <tr><td><code>--force, -f</code></td><td>覆盖已存在的同名目录</td></tr>
               <tr><td><code>--branch, -b</code></td><td>指定远程分支或 tag</td></tr>
             </tbody>
