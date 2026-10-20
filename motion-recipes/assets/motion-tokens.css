@@ -1,0 +1,233 @@
+/* ============================================================
+   动效与材质令牌（可整段拷进项目）
+   - 颜色 / 圆角 / 阴影：与 scaffold-vue/src/styles/tokens.css 同值
+   - 缓动 / 时长：与 composables/motion.ts 的 EASE / DUR 同值
+   规则：颜色、阴影、圆角给 CSS；transform / opacity 给动效脚本。
+   ============================================================ */
+
+:root {
+  /* ── 缓动（CSS 里只能写 cubic-bezier，语义与 JS 侧一致） ── */
+  --ease-reveal: cubic-bezier(0.16, 1, 0.3, 1);      /* expo.out     显现 */
+  --ease-glide:  cubic-bezier(0.22, 1, 0.36, 1);      /* power4.out   滑行 */
+  --ease-exit:   cubic-bezier(0.55, 0, 1, 0.45);      /* power2.in    退场 */
+  --ease-swap:   cubic-bezier(0.65, 0, 0.35, 1);      /* power2.inOut 交接 */
+  --ease-settle: cubic-bezier(0.34, 1.56, 0.64, 1);   /* back.out(1.6) 落定 */
+  --ease-premium: var(--ease-reveal);                 /* 项目别名，历史代码在用 */
+
+  /* ── 时长 ── */
+  --dur-press: 140ms;
+  --dur-release: 460ms;
+  --dur-hover-in: 340ms;
+  --dur-hover-out: 420ms;
+  --dur-slide: 520ms;
+  --dur-page-out: 180ms;
+  --dur-page-in: 620ms;
+  --dur-overlay-in: 420ms;
+  --dur-overlay-out: 200ms;
+
+  /* ── 圆角 ── */
+  --r-xs: 8px;
+  --r-sm: 12px;
+  --r-md: 16px;
+  --r-lg: 20px;
+  --r-xl: 24px;
+
+  /* ── 字色 ── */
+  --ink: #101418;
+  --ink-muted: #596368;
+  --ink-soft: #7e888c;
+  --ink-faint: #99a2a5;
+
+  /* ── 语义色 ── */
+  --blue: #236de9;
+  --blue-hover: #1d61d5;
+  --blue-soft: rgba(35, 109, 233, 0.1);
+  --lime: #82dd2d;
+  --lime-soft: rgba(130, 221, 45, 0.14);
+  --red: #ff5a50;
+  --red-text: #e0443b;
+  --red-soft: rgba(255, 90, 80, 0.11);
+  --focus: rgba(35, 109, 233, 0.8);
+
+  /* ── 阴影：接触 + 环境 ── */
+  --shade: 46, 58, 62;
+  --e1: 0 1px 2px rgba(var(--shade), 0.05), 0 5px 14px rgba(var(--shade), 0.04);
+  --e2: 0 1px 3px rgba(var(--shade), 0.06), 0 12px 30px rgba(var(--shade), 0.055);
+  --e3: 0 2px 6px rgba(var(--shade), 0.07), 0 22px 50px rgba(var(--shade), 0.08);
+  --e-accent: 0 1px 2px rgba(20, 66, 148, 0.28), 0 8px 18px rgba(35, 109, 233, 0.24);
+  --e-accent-hover: 0 1px 2px rgba(20, 66, 148, 0.32), 0 12px 24px rgba(35, 109, 233, 0.3);
+  --e-danger: 0 1px 2px rgba(150, 40, 34, 0.26), 0 8px 18px rgba(255, 90, 80, 0.24);
+  --edge: inset 0 1px 0 rgba(255, 255, 255, 0.92);
+
+  /* ── 材质面 ── */
+  --line: rgba(var(--shade), 0.085);
+  --line-strong: rgba(var(--shade), 0.11);
+  --glass-line: rgba(255, 255, 255, 0.88);
+  --surface: linear-gradient(145deg, rgba(255, 255, 255, 0.97), rgba(249, 252, 251, 0.93));
+  --surface-solid: #fbfcfc;
+  --overlay: rgba(16, 20, 24, 0.26);
+  --dark-surface: #131619;
+
+  /* ── 布局 ── */
+  --control-h: 36px;
+  --control-h-sm: 30px;
+  --layer-overlay: 200;
+  --layer-toast: 400;
+}
+
+/* 深色：同一语义，换材质（阴影不要复用浅色值） */
+:root[data-theme='dark'] {
+  --ink: #eef2f1;
+  --ink-muted: #b0babd;
+  --ink-soft: #8d979a;
+  --ink-faint: #6c7679;
+  --blue: #4c8dff;
+  --blue-hover: #3d7ff2;
+  --blue-soft: rgba(76, 141, 255, 0.16);
+  --lime-soft: rgba(130, 221, 45, 0.16);
+  --red-text: #ff7a71;
+  --red-soft: rgba(255, 90, 80, 0.16);
+  --shade: 0, 0, 0;
+  --line: rgba(255, 255, 255, 0.07);
+  --line-strong: rgba(255, 255, 255, 0.1);
+  --glass-line: rgba(255, 255, 255, 0.1);
+  --e1: 0 1px 2px rgba(0, 0, 0, 0.3), 0 5px 14px rgba(0, 0, 0, 0.2);
+  --e2: 0 1px 3px rgba(0, 0, 0, 0.32), 0 12px 30px rgba(0, 0, 0, 0.28);
+  --e3: 0 2px 6px rgba(0, 0, 0, 0.36), 0 22px 50px rgba(0, 0, 0, 0.42);
+  --surface: linear-gradient(145deg, rgba(29, 33, 36, 0.98), rgba(25, 29, 31, 0.96));
+  --surface-solid: #1b1f21;
+  --overlay: rgba(0, 0, 0, 0.5);
+}
+
+/* 需要被连续补间的自定义属性必须注册（inherits: false 避免打脏后代） */
+@property --fill {
+  syntax: '<percentage>';
+  inherits: false;
+  initial-value: 0%;
+}
+
+/* ============================================================
+   材质：只用于层级，不铺满页面
+   ============================================================ */
+
+.m-rail {
+  background: rgba(250, 251, 250, 0.92);
+  backdrop-filter: blur(22px);
+  -webkit-backdrop-filter: blur(22px);
+}
+.m-pill {
+  border: 1px solid var(--glass-line);
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.93), rgba(246, 251, 249, 0.62));
+  box-shadow: var(--e2), var(--edge), inset 0 -1px 0 rgba(105, 122, 128, 0.08);
+  backdrop-filter: blur(22px) saturate(1.18);
+  -webkit-backdrop-filter: blur(22px) saturate(1.18);
+}
+.m-float {
+  border: 1px solid var(--glass-line);
+  background: rgba(246, 248, 247, 0.86);
+  box-shadow: var(--e3), inset 0 0 0 1px rgba(120, 132, 135, 0.13);
+  backdrop-filter: blur(28px) saturate(1.08);
+  -webkit-backdrop-filter: blur(28px) saturate(1.08);
+}
+.m-surface {
+  border: 1px solid var(--line-strong);
+  background: var(--surface);
+  box-shadow: var(--edge), var(--e1); /* 阅读面：浅色态不模糊 */
+}
+.m-groove {
+  border: 1px solid rgba(255, 255, 255, 0.7);
+  background: rgba(225, 231, 229, 0.5);
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.46);
+}
+
+/* 深色材质：玻璃在暗底上要"提亮"而不是"提白"，否则字会糊 */
+:root[data-theme='dark'] .m-rail {
+  background: rgba(20, 24, 26, 0.92);
+}
+:root[data-theme='dark'] .m-pill {
+  border-color: rgba(255, 255, 255, 0.09);
+  background: linear-gradient(145deg, rgba(62, 70, 74, 0.72), rgba(30, 36, 39, 0.6));
+  box-shadow: var(--e2), inset 0 1px 0 rgba(255, 255, 255, 0.07), inset 0 -1px 0 rgba(0, 0, 0, 0.4);
+}
+:root[data-theme='dark'] .m-float {
+  border-color: rgba(255, 255, 255, 0.08);
+  background: rgba(28, 33, 36, 0.88);
+}
+:root[data-theme='dark'] .m-surface {
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.05), var(--e1);
+}
+:root[data-theme='dark'] .m-groove {
+  border-color: rgba(255, 255, 255, 0.06);
+  background: rgba(255, 255, 255, 0.045);
+  box-shadow: inset 0 1px 0 rgba(0, 0, 0, 0.35);
+}
+:root[data-theme='dark'] .m-glow > .glow-layer {
+  background: radial-gradient(circle 120px at var(--px) var(--py), rgba(255, 255, 255, 0.14), rgba(130, 221, 45, 0.05) 42%, transparent 72%);
+  mix-blend-mode: normal;
+}
+
+/* 容器级指针光（坐标由 JS 写在容器自身） */
+.m-glow {
+  --px: 50%;
+  --py: 50%;
+  position: relative;
+  isolation: isolate;
+}
+.m-glow > .glow-layer {
+  position: absolute;
+  inset: 0;
+  z-index: 0;
+  border-radius: inherit;
+  pointer-events: none;
+  opacity: 0;
+  background: radial-gradient(circle 120px at var(--px) var(--py), rgba(255, 255, 255, 0.9), rgba(130, 221, 45, 0.08) 42%, transparent 72%);
+  mix-blend-mode: screen;
+  transition: opacity 0.28s ease;
+}
+@media (hover: hover) {
+  .m-glow:hover > .glow-layer {
+    opacity: 0.72;
+  }
+}
+
+/* ============================================================
+   入场兜底：脚本就位前不让元素以终态闪现
+   ============================================================ */
+
+.page:not(.is-entrance-ready) .reveal,
+.page:not(.is-entrance-ready) .bento,
+.login:not(.is-entrance-ready) .intro {
+  opacity: 0;
+}
+
+/* ============================================================
+   减少动效 / 减少透明
+   ============================================================ */
+
+@media (prefers-reduced-motion: reduce) {
+  .btn,
+  .icon-btn,
+  .nav-item,
+  .checkbox-box,
+  .switch-knob,
+  .tree-toggle svg,
+  .toast-slot {
+    transition-duration: 1ms !important;
+  }
+  .m-glow > .glow-layer {
+    display: none;
+  }
+}
+
+@media (prefers-reduced-transparency: reduce) {
+  .m-rail,
+  .m-pill,
+  .m-float {
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
+  .m-rail,
+  .m-float {
+    background: var(--surface-solid);
+  }
+}

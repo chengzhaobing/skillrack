@@ -1,0 +1,431 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>交互动效配方库 · 演示</title>
+<link rel="stylesheet" href="../motion-tokens.css" />
+<link rel="stylesheet" href="./demo.css" />
+</head>
+<body>
+<div class="shell">
+  <aside class="index">
+    <div class="index-brand">
+      <span class="dot"></span>
+      <div>
+        <b>交互动效配方库</b>
+        <small>motion recipes · 现场演示</small>
+      </div>
+    </div>
+    <nav class="index-nav" aria-label="效果索引">
+      <a href="#auth">01 登录按钮形变</a>
+      <a href="#press">02 按压与悬停</a>
+      <a href="#glow">03 指针光与倾斜</a>
+      <a href="#magnet">04 磁吸</a>
+      <a href="#thumb">05 滑动玻璃块</a>
+      <a href="#overlay">06 弹窗与抽屉</a>
+      <a href="#toast">07 提示牌堆</a>
+      <a href="#readout">08 读数与刻度环</a>
+      <a href="#chart">09 图表描绘与形变</a>
+      <a href="#text">10 文字与对勾</a>
+      <a href="#stagger">11 卡片级联</a>
+      <a href="#skeleton">12 骨架与行级联</a>
+      <a href="#flip">13 FLIP 重排</a>
+      <a href="#spring">14 弹簧追随</a>
+      <a href="#dashboard">15 数据看板入场</a>
+      <a href="#refresh">16 数据更新</a>
+    </nav>
+    <button type="button" class="btn-theme" id="theme">切换深色</button>
+    <p class="index-foot">参数取自 <code>references/design-tokens.md</code><br />所有效果都带 reduced-motion 降级</p>
+  </aside>
+
+  <main class="content">
+
+    <!-- 01 -->
+    <section class="block" id="auth">
+      <header class="block-head">
+        <span class="eyebrow">01 · 按钮</span>
+        <h2>登录按钮形变</h2>
+        <p>文字先退 → 胶囊收到圆 → 圆环与对勾描出 → 确认弹；失败抖动后长回长条。宽度动画锁在固定高度槽位里，表单不抖。</p>
+      </header>
+      <div class="stage">
+        <div class="form-demo">
+          <label class="fake-field"><span>账号</span><input value="admin" readonly /></label>
+          <label class="fake-field"><span>密码</span><input value="••••••••" readonly /></label>
+          <div class="auth-slot">
+            <button class="auth-action" type="button" data-state="idle" aria-live="polite">
+              <span class="auth-label">登录</span>
+              <svg class="auth-mark" viewBox="0 0 46 46" aria-hidden="true">
+                <circle class="mark-track" cx="23" cy="23" r="20" />
+                <circle class="mark-progress" cx="23" cy="23" r="20" />
+                <path class="mark-check" d="m15 23.5 5.5 5.5L31.5 18" />
+              </svg>
+            </button>
+          </div>
+          <p class="hint" id="auth-hint">点「登录」看成功路径，或点下方的「模拟失败」。</p>
+        </div>
+        <div class="controls">
+          <button class="btn btn-secondary" data-auth="error">模拟失败</button>
+          <button class="btn btn-ghost" data-auth="reset">复位</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 -->
+    <section class="block" id="press">
+      <header class="block-head">
+        <span class="eyebrow">02 · 微交互</span>
+        <h2>按压与悬停</h2>
+        <p>按下压缩到 0.955（0.14s），松手弹回（0.46s <code>back.out</code>）；悬停写 <code>y</code>、按压写 <code>scale</code>，两条通道互不覆盖。</p>
+      </header>
+      <div class="stage">
+        <button class="btn btn-primary">主操作</button>
+        <button class="btn btn-secondary">次级按钮</button>
+        <button class="btn btn-ghost">幽灵按钮</button>
+        <div class="lift m-pill card-mini">
+          <b>可点卡片</b>
+          <small>悬停抬起 3px</small>
+        </div>
+      </div>
+    </section>
+
+    <!-- 03 -->
+    <section class="block" id="glow">
+      <header class="block-head">
+        <span class="eyebrow">03 · 材质</span>
+        <h2>指针光与卡片倾斜</h2>
+        <p>光斑写在容器的 <code>--px/--py</code> 上，120px 径向渐变 + <code>screen</code>；右侧卡片随指针倾 ≤ 4°，透视在父级。</p>
+      </header>
+      <div class="stage stage-split">
+        <div class="glow-card m-surface m-glow">
+          <span class="glow-layer" aria-hidden="true"></span>
+          <b>容器级指针光</b>
+          <p>把指针移到这张卡上。光斑是材质，不是"可点"的承诺——一屏只给一个主角用。</p>
+        </div>
+        <div class="tilt-wrap">
+          <div class="tilt-card m-surface">
+            <b>倾斜卡</b>
+            <p>rotationX ≤ 3°，rotationY ≤ 4°，<code>quickTo</code> 0.6s。</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 04 -->
+    <section class="block" id="magnet">
+      <header class="block-head">
+        <span class="eyebrow">04 · 微交互</span>
+        <h2>磁吸按钮</h2>
+        <p>指针进入 90px 半径时按钮被轻吸，最多偏移 10px；离开回正。只在 <code>(hover: hover) and (pointer: fine)</code> 启用。</p>
+      </header>
+      <div class="stage stage-center">
+        <button class="btn btn-primary magnet" data-magnet>靠近我</button>
+      </div>
+    </section>
+
+    <!-- 05 -->
+    <section class="block" id="thumb">
+      <header class="block-head">
+        <span class="eyebrow">05 · 切换</span>
+        <h2>滑动玻璃块</h2>
+        <p>几何差值定位，0.52s <code>power4.out</code>；祖先正在缩放时按 <code>rect / offsetWidth</code> 折算回布局像素。</p>
+      </header>
+      <div class="stage">
+        <div class="segmented m-groove" id="seg">
+          <span class="seg-thumb m-pill" aria-hidden="true"></span>
+          <button type="button" class="is-active" data-seg="star">星图</button>
+          <button type="button" data-seg="table">表格</button>
+          <button type="button" data-seg="board">看板</button>
+          <button type="button" data-seg="canvas">画布</button>
+        </div>
+        <p class="hint" id="seg-hint">当前视图：星图</p>
+      </div>
+    </section>
+
+    <!-- 06 -->
+    <section class="block" id="overlay">
+      <header class="block-head">
+        <span class="eyebrow">06 · 转场</span>
+        <h2>弹窗从触发点展开 · 抽屉共享元素</h2>
+        <p>弹窗以指针按下处为 <code>transformOrigin</code>；抽屉由被点的行"长"成，关闭时缩回原行。</p>
+      </header>
+      <div class="stage">
+        <div class="rows" id="rows">
+          <button class="row-item" type="button"><b>菜单管理</b><small>system/menu/index</small></button>
+          <button class="row-item" type="button"><b>部门管理</b><small>system/dept/index</small></button>
+          <button class="row-item" type="button"><b>角色管理</b><small>system/role/index</small></button>
+        </div>
+        <div class="controls">
+          <button class="btn btn-primary" data-modal>打开弹窗</button>
+          <button class="btn btn-secondary" data-drawer>打开抽屉（键盘触发 → 从右侧滑入）</button>
+        </div>
+        <p class="hint">点上面的行再打开抽屉，会从那一行生长；用 Tab 聚焦后回车，则回落成滑入。</p>
+      </div>
+    </section>
+
+    <!-- 07 -->
+    <section class="block" id="toast">
+      <header class="block-head">
+        <span class="eyebrow">07 · 反馈</span>
+        <h2>提示牌堆</h2>
+        <p>新提示 <code>back.out</code> 弹入、旧的缩成牌堆；悬停展开并暂停倒计时环。位置归 CSS，进出场归 GSAP。</p>
+      </header>
+      <div class="stage">
+        <div class="controls">
+          <button class="btn btn-secondary" data-toast="ok">成功提示</button>
+          <button class="btn btn-secondary" data-toast="info">普通提示</button>
+          <button class="btn btn-secondary" data-toast="danger">失败提示</button>
+        </div>
+        <div class="toast-host" id="toast-host" role="status" aria-live="polite"></div>
+      </div>
+    </section>
+
+    <!-- 08 -->
+    <section class="block" id="readout">
+      <header class="block-head">
+        <span class="eyebrow">08 · 读数</span>
+        <h2>逐位滚动与刻度环</h2>
+        <p>每一位是一条 0–9 竖带，只滚变化位（位次从右往左编号）；60 根刻度逐根点亮，末端一次 <code>back.out</code> 过冲。</p>
+      </header>
+      <div class="stage stage-split">
+        <div class="readout-card m-surface">
+          <span class="eyebrow">在线用户</span>
+          <span class="odometer" id="odo" role="img" aria-label="0"></span>
+          <div class="controls">
+            <button class="btn btn-secondary" data-odo>换一个数</button>
+          </div>
+        </div>
+        <div class="ring-card m-surface">
+          <div class="tick-ring" id="ring" style="width:168px;height:168px">
+            <svg viewBox="0 0 1 1" width="168" height="168" role="img" aria-label="成功率 82%"></svg>
+            <div class="tick-ring-center">
+              <span class="tick-ring-value"><span id="ring-value">82.4</span><sup>%</sup></span>
+              <span class="tick-ring-label">成功</span>
+            </div>
+          </div>
+          <button class="btn btn-secondary" data-ring>重播</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- 09 -->
+    <section class="block" id="chart">
+      <header class="block-head">
+        <span class="eyebrow">09 · 图表</span>
+        <h2>折线描绘、形变与柱子生长</h2>
+        <p>首次用 <code>dashoffset</code> 描绘（只画一次），切换数据时把旧点列重采样后插值，逐帧写回 <code>d</code>。</p>
+      </header>
+      <div class="stage">
+        <div class="chart-card m-surface">
+          <svg id="line-chart" viewBox="0 0 560 180" preserveAspectRatio="none" aria-label="趋势图">
+            <path class="area" id="area" />
+            <path class="line" id="line" />
+            <circle class="pulse-dot" id="pulse-dot" r="3" />
+          </svg>
+          <div class="controls">
+            <button class="btn btn-secondary" data-line="a">数据 A</button>
+            <button class="btn btn-secondary" data-line="b">数据 B</button>
+            <button class="btn btn-ghost" data-line="replay">重播描绘</button>
+          </div>
+        </div>
+        <div class="chart-card m-surface">
+          <div class="bars" id="bars" role="img" aria-label="柱状图"></div>
+          <div class="controls">
+            <button class="btn btn-secondary" data-bars>重播生长</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 10 -->
+    <section class="block" id="text">
+      <header class="block-head">
+        <span class="eyebrow">10 · 文字与 SVG</span>
+        <h2>逐行落定与对勾描边</h2>
+        <p>大字按语义行拆分，每行 0.08s 错开；对勾用圆环 + 勾两段 <code>strokeDashoffset</code>，不用 emoji。</p>
+      </header>
+      <div class="stage stage-split">
+        <div class="text-demo">
+          <h3 class="lines">
+            <span class="line">统一的后台底座，</span>
+            <span class="line">专注业务本身。</span>
+          </h3>
+          <button class="btn btn-secondary" data-lines>重播</button>
+        </div>
+        <div class="check-demo">
+          <button class="check-orb" type="button" data-check aria-label="播放成功">
+            <svg viewBox="0 0 46 46" aria-hidden="true">
+              <circle class="check-track" cx="23" cy="23" r="20" />
+              <circle class="check-ring" cx="23" cy="23" r="20" />
+              <path class="check-path" d="m15 23.5 5.5 5.5L31.5 18" />
+            </svg>
+          </button>
+          <p class="hint">点圆播放</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- 11 -->
+    <section class="block" id="stagger">
+      <header class="block-head">
+        <span class="eyebrow">11 · 入场</span>
+        <h2>并列卡片级联</h2>
+        <p>并列卡片用 <code>from: 'center'</code> 从中间向两侧展开；阅读序内容用 <code>from: 'start'</code>。每张 0.045s。</p>
+      </header>
+      <div class="stage">
+        <div class="grid-demo" id="grid-demo">
+          <div class="tile">主卡</div>
+          <div class="tile">侧块</div>
+          <div class="tile">读数</div>
+          <div class="tile">分布</div>
+          <div class="tile">泳道</div>
+          <div class="tile">入口</div>
+        </div>
+        <div class="controls"><button class="btn btn-secondary" data-stagger>重播</button></div>
+      </div>
+    </section>
+
+    <!-- 12 -->
+    <section class="block" id="skeleton">
+      <header class="block-head">
+        <span class="eyebrow">12 · 加载</span>
+        <h2>骨架屏与列表行级联</h2>
+        <p>骨架用 6 行假数据 + 不规则条宽；数据到达后按签名判断是否重播级联（切换开关不重播）。</p>
+      </header>
+      <div class="stage">
+        <div class="table-demo m-surface" id="table-demo"></div>
+        <div class="controls"><button class="btn btn-secondary" data-table>重新加载</button></div>
+      </div>
+    </section>
+
+    <!-- 13 -->
+    <section class="block" id="flip">
+      <header class="block-head">
+        <span class="eyebrow">13 · 共享布局</span>
+        <h2>FLIP 重排</h2>
+        <p>先记录旧位置，改 DOM，再从旧位置滑到新位置（0.62s <code>power4.out</code>）。同一个元素换位置/尺寸时用它，不要各自补间宽度。</p>
+      </header>
+      <div class="stage">
+        <div class="flip-grid" id="flip-grid"></div>
+        <div class="controls"><button class="btn btn-secondary" data-flip>打乱顺序</button></div>
+      </div>
+    </section>
+
+    <!-- 14 -->
+    <section class="block" id="spring">
+      <header class="block-head">
+        <span class="eyebrow">14 · 物理</span>
+        <h2>弹簧追随</h2>
+        <p>节点用临界阻尼弹簧追随目标（k=70），目标随时变化也不会一顿一顿；帧循环在离屏/隐藏时停帧。</p>
+      </header>
+      <div class="stage">
+        <div class="spring-stage" id="spring-stage">
+          <span class="spring-puck" id="puck"></span>
+          <span class="spring-target" id="spring-target"></span>
+        </div>
+        <p class="hint">在舞台上移动指针，圆点用弹簧追过来。</p>
+      </div>
+    </section>
+
+    <!-- 15 -->
+    <section class="block" id="dashboard">
+      <header class="block-head">
+        <span class="eyebrow">15 · 数据看板</span>
+        <h2>数字滚动 · 柱条生长 · 折线描画 · 环图展开 · 错峰入场</h2>
+        <p>顺序即信息层级：指标 → 图表 → 明细。轴、单位、卡片位置全程固定，读数与图形同一进度，只播一次。</p>
+      </header>
+      <div class="dash" id="dash">
+        <div class="dash-layer dash-metrics" data-layer="metrics">
+          <article class="kpi m-surface" data-kpi data-value="1284" data-decimals="0">
+            <span class="kpi-label">播放量</span>
+            <span class="kpi-line"><span class="kpi-value">—</span><span class="kpi-unit">万</span></span>
+            <span class="kpi-delta is-up">▲ 12.4%</span>
+            <span class="kpi-flash" aria-hidden="true"></span>
+          </article>
+          <article class="kpi m-surface" data-kpi data-value="86.4" data-decimals="1">
+            <span class="kpi-label">销售额</span>
+            <span class="kpi-line"><span class="kpi-value">—</span><span class="kpi-unit">万元</span></span>
+            <span class="kpi-delta is-up">▲ 6.8%</span>
+            <span class="kpi-flash" aria-hidden="true"></span>
+          </article>
+          <article class="kpi m-surface" data-kpi data-value="12.6" data-decimals="1">
+            <span class="kpi-label">转化率</span>
+            <span class="kpi-line"><span class="kpi-value">—</span><span class="kpi-unit">%</span></span>
+            <span class="kpi-delta is-down">▼ 1.2%</span>
+            <span class="kpi-flash" aria-hidden="true"></span>
+          </article>
+        </div>
+        <div class="dash-layer dash-charts" data-layer="charts">
+          <article class="panel m-surface">
+            <h4>渠道对比 <small>万次</small></h4>
+            <div class="hbars" id="hbars"></div>
+          </article>
+          <article class="panel m-surface donut-card">
+            <h4>来源占比</h4>
+            <div class="donut" id="donut" data-radius="54">
+              <svg viewBox="0 0 140 140" aria-hidden="true">
+                <circle class="donut-base" cx="70" cy="70" r="54" />
+              </svg>
+              <div class="donut-center"><span class="donut-total">0</span><small>%</small></div>
+            </div>
+            <ul class="donut-legend" id="donut-legend"></ul>
+          </article>
+          <article class="panel m-surface trend-card" data-baseline="164">
+            <h4>近 12 期趋势</h4>
+            <svg class="trend" viewBox="0 0 560 180" preserveAspectRatio="none" role="img" aria-label="近 12 期播放量趋势">
+              <path class="trend-area" d="" />
+              <path class="trend-line" pathLength="1" d="" />
+              <circle class="trend-dot" r="3" />
+            </svg>
+          </article>
+        </div>
+        <div class="dash-layer dash-detail" data-layer="detail">
+          <article class="panel m-surface">
+            <h4>明细</h4>
+            <div class="mini-rows" id="mini-rows"></div>
+          </article>
+        </div>
+      </div>
+      <div class="controls"><button class="btn btn-ghost" data-dash-replay>重播入场（仅演示，线上只播一次）</button></div>
+    </section>
+
+    <!-- 16 -->
+    <section class="block" id="refresh">
+      <header class="block-head">
+        <span class="eyebrow">16 · 数据更新</span>
+        <h2>旧值平滑过渡到新值</h2>
+        <p>刷新不重播入场：读数与图形共用同一进度，只对变化的块闪一次高光，未变化的块完全不动。</p>
+      </header>
+      <div class="refresh-card m-surface" id="refresh-card">
+        <div class="dash-layer dash-metrics" data-layer="metrics">
+          <article class="kpi plain" data-kpi data-value="1284" data-decimals="0">
+            <span class="kpi-label">播放量</span>
+            <span class="kpi-line"><span class="kpi-value">1,284</span><span class="kpi-unit">万</span></span>
+            <span class="kpi-flash" aria-hidden="true"></span>
+          </article>
+          <article class="kpi plain" data-kpi data-value="86.4" data-decimals="1">
+            <span class="kpi-label">销售额</span>
+            <span class="kpi-line"><span class="kpi-value">86.4</span><span class="kpi-unit">万元</span></span>
+            <span class="kpi-flash" aria-hidden="true"></span>
+          </article>
+        </div>
+        <div class="hbars" id="refresh-bars"></div>
+        <div class="controls">
+          <button class="btn btn-primary" data-refresh>刷新数据</button>
+          <span class="hint" id="refresh-hint">点一次刷新：数字与柱子同步过渡，块只闪一次。</span>
+        </div>
+      </div>
+    </section>
+
+    <footer class="foot">
+      <p>这套演示里的每个效果都对应 <code>references/</code> 里的一条配方；数值全部来自 <code>design-tokens.md</code>。</p>
+    </footer>
+  </main>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/gsap.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/gsap@3.13.0/dist/Flip.min.js"></script>
+<script src="./demo.js"></script>
+<script src="./selftest.js"></script>
+</body>
+</html>

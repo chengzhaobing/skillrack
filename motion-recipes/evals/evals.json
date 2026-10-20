@@ -1,0 +1,62 @@
+{
+  "skill_name": "motion-recipes",
+  "evals": [
+    {
+      "id": 1,
+      "name": "login-page-morph",
+      "prompt": "帮我做一个登录页，要高级一点。提交按钮点下去要有过程感：加载的时候转圈，成功了对勾出现，失败了要抖一下再恢复。页面用浅色玻璃质感，登录卡跟着鼠标轻微倾斜。",
+      "expected_output": "登录页：胶囊按钮提交后进入 loading（宽度不跳），成功后收到圆形并画出圆环+对勾（不用 emoji），失败抖动后恢复长条；登录卡指针倾斜 ≤4°；参数来自 design-tokens；带 reduced-motion 终态与防重复点击。",
+      "files": [],
+      "assertions": [
+        { "text": "实现了胶囊→圆的宽度形变，且外层有固定高度槽位", "type": "qualitative" },
+        { "text": "成功态用 SVG 描边画圆环与对勾，没有 emoji", "type": "qualitative" },
+        { "text": "失败态抖动并恢复为长条按钮，且能再次提交", "type": "qualitative" },
+        { "text": "存在 reduced-motion 分支且直接给出终态", "type": "qualitative" },
+        { "text": "提交期间禁止重复触发（disabled / busy 标志 / aria-busy）", "type": "qualitative" }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "dashboard-entrance-and-refresh",
+      "prompt": "做一个数据看板首屏：三个核心指标（播放量、销售额、转化率）打开时从 0 滚到目标值，单位别乱跳；下面一个渠道对比的横向柱条，从 0 往右长、长了以后再显示数值；再一个来源占比的环图，色块依次展开、中间总量固定；最后按指标→图表→明细的顺序错峰出现。刷新按钮点下去数字和图形要平滑过渡，不要重新播一遍入场。",
+      "expected_output": "看板：数字 0→目标（只播一次，tabular-nums，单位独立节点）；横向柱条 scaleX + transform-origin:left，数值在柱到位后出现；环图逐段展开且中心总量不动、占比标签保留；三层错峰入场 ≤1.1s；刷新时读数与图形共用同一进度、不重播入场、只闪变化块。",
+      "files": [],
+      "assertions": [
+        { "text": "数字滚动只播一次，单位与卡片位置固定", "type": "qualitative" },
+        { "text": "柱条用 scaleX + transform-origin 生长，未用 width", "type": "qualitative" },
+        { "text": "数值在柱条到位后才出现，且数值列不随柱长移动", "type": "qualitative" },
+        { "text": "环图逐段展开，中心总量与图例位置不动", "type": "qualitative" },
+        { "text": "面板按指标→图表→明细错峰入场", "type": "qualitative" },
+        { "text": "刷新时走旧值→新值，读数与图形同步，未重播入场", "type": "qualitative" }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "product-card-grid-transitions",
+      "prompt": "做一个产品卡片列表页，卡片要有悬停抬起和指针光，切换分类的时候卡片要平滑重排不要跳。点卡片在右侧打开详情抽屉，最好是从被点的那张卡长出来那种感觉。",
+      "expected_output": "卡片网格：按压/悬停分通道、容器级指针光、分类切换用 Flip 或 FLIP 快照重排、抽屉使用共享元素 morph ghost 从被点卡片生长并可收回；带清理与 reduced-motion。",
+      "files": [],
+      "assertions": [
+        { "text": "悬停写 y、按压写 scale，两条通道未互相覆盖", "type": "qualitative" },
+        { "text": "指针光通过 CSS 变量写在容器自身，未写在上层", "type": "qualitative" },
+        { "text": "分类切换使用 Flip.getState / FLIP 快照，而不是重新淡入", "type": "qualitative" },
+        { "text": "抽屉有共享元素来处，且来处失效时有滑入兜底", "type": "qualitative" },
+        { "text": "卸载或关闭时清理时间轴/幽灵元素/监听", "type": "qualitative" }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "landing-scroll-narrative",
+      "prompt": "给我们的落地页加一段滚动叙事：左边钉住一张产品示意图，右边三段文案依次出现，滚动的时候有个进度条。我们的页面内容区是自己滚动的（.content 里 overflow-y:auto），不是 window 滚动。",
+      "expected_output": "使用 ScrollTrigger 且显式设置 scroller: '.content'（或改用 sticky + 进度方案）；pin 处理了 overflow: clip 的限制；scrub 用数值；只动 transform/opacity；带 refresh、清理与 reduced-motion 降级。",
+      "files": [],
+      "assertions": [
+        { "text": "滚动触发器显式指向自定义滚动容器", "type": "qualitative" },
+        { "text": "识别了外壳 overflow: clip 与 pin 的冲突并给出处理", "type": "qualitative" },
+        { "text": "scrub 使用数值并获得阻尼感", "type": "qualitative" },
+        { "text": "滚动驱动只补间 transform/opacity", "type": "qualitative" },
+        { "text": "有 refresh / kill 与 reduced-motion 降级", "type": "qualitative" }
+      ]
+    }
+  ]
+}
