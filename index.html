@@ -4,7 +4,7 @@
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>skillrack · agent skills</title>
-<meta name="description" content="Agent 技能架：一条命令把 Markdown 技能装进 CodeBuddy、Claude Code、Cursor。零依赖，MIT。" />
+<meta name="description" content="Agent 技能架：一条 npm 命令把 Markdown 技能装进项目 .agent/skills 或全局 ~/.agent/skills。零依赖，MIT。" />
 <meta name="color-scheme" content="dark" />
 <style>
   :root {
@@ -476,13 +476,13 @@
         <canvas id="wordmark" role="img" aria-label="SKILLRACK"></canvas>
       </div>
       <p class="lede">
-        Agent 技能架。<b>一条命令</b>，把 Markdown 技能装进
-        CodeBuddy、Claude Code、Cursor，目录落位、开箱即用。
+        Agent 技能架。<b>一条 npm 命令</b>安装，技能装进项目
+        <code>.agent/skills</code> 或全局 <code>~/.agent/skills</code>，开箱即用。
       </p>
 
       <div class="install">
         <span class="prompt" aria-hidden="true">$</span>
-        <code id="cmd-main">npx skillrack add motion-recipes</code>
+        <code id="cmd-main">npm i -g skillrack</code>
         <button class="copy" data-copy="#cmd-main" type="button">复制</button>
       </div>
 
@@ -490,7 +490,7 @@
         <li><b>0</b> 依赖</li>
         <li><b>Node 18+</b> 即可</li>
         <li><b>1</b> 个技能</li>
-        <li><b>77</b> 个宿主</li>
+        <li><b>2</b> 个安装位置</li>
         <li><b>MIT</b> 许可</li>
       </ul>
     </section>
@@ -532,28 +532,26 @@
 
       <section class="panel" role="tabpanel" id="panel-start" aria-labelledby="tab-start" tabindex="0" hidden>
         <h2>快速开始</h2>
-        <p class="hint">不用全局安装，npx 每次取最新版；不传参数就是交互式选择。</p>
+        <p class="hint">统一走 npm：全局装一次，或直接用 npx；技能只装到两个位置之一。</p>
         <ol class="steps">
-          <li>在项目根目录执行 <code>npx skillrack add motion-recipes</code>，CLI 打印像素字横幅后进入多选。</li>
-          <li>用 ↑↓ 移动、Space 勾选要装的宿主（已装的会标 <code>detected</code>）；默认一个都不勾。</li>
-          <li>Enter 确认；若一个都没勾，直接放弃安装，不写任何文件。</li>
-          <li>脚本 / CI 场景用 <code>--agent claude,codex</code> 跳过交互，<code>--agent detected</code> 装到全部已检测宿主。</li>
-          <li>新开一个对话即可加载；卸载用 <code>npx skillrack remove motion-recipes</code>。</li>
+          <li>安装 CLI：<code>npm i -g skillrack</code>（之后任何项目里直接用 <code>skillrack</code>），或免安装用 <code>npx skillrack</code>，项目内固定版本用 <code>npm i -D skillrack</code>。</li>
+          <li>装技能：<code>skillrack add motion-recipes</code>，交互里选「本项目」或「全局」，写入 <code>.agent/skills</code> 或 <code>~/.agent/skills</code>。</li>
+          <li>脚本 / CI 直接声明范围：<code>--project</code>、<code>--global</code>，或 <code>--target ./dir</code> 指定任意目录，全程无交互。</li>
+          <li>同一仓库多个技能可一次勾选；已存在同名目录默认跳过，<code>--force</code> 才覆盖。</li>
+          <li>新开一个会话即可加载；卸载用 <code>skillrack remove motion-recipes</code>（两个目录都搜）。</li>
+          <li><code>skillrack paths</code> 查看两个安装目录与各自已装技能数。</li>
         </ol>
 
-        <p class="label" style="margin-top:20px">选择界面</p>
-        <pre><span class="c">?</span> 选择安装目标 · motion-recipes  项目级 ./
-<span class="c">────────────────────────────────────────────────────────</span>
-<span class="k">❯</span> ◉ CodeBuddy     .codebuddy/skills    <span class="s">detected</span>
-  ○ Claude Code   .claude/skills       <span class="s">detected</span>
-  ○ Cursor        .cursor/skills
-  ○ Codex         .codex/skills
-<span class="c">↑↓ 移动 · Space 勾选 · A 全选 · N 清空 · Enter 确认 · Q 取消</span>   已选 1</pre>
+        <p class="label" style="margin-top:20px">未指定范围时只问这一次</p>
+        <pre><span class="c">?</span> 第 2 步 / 选择安装范围
+<span class="k">❯</span> ● 本项目（项目级）  .agent/skills
+  ○ 全局（用户级）    ~/.agent/skills
+<span class="c">↑↓ 移动 · Enter 确认 · Q 取消</span></pre>
       </section>
 
       <section class="panel" role="tabpanel" id="panel-cmd" aria-labelledby="tab-cmd" tabindex="0" hidden>
         <h2>命令手册</h2>
-        <p class="hint">全部命令零交互，退出码 0 成功 / 1 失败，可直接进 CI。</p>
+        <p class="hint">退出码：0 已写入 / 1 参数或网络错误 / 2 未写入（取消或全部已存在），可直接进 CI。</p>
         <div class="table-wrap">
           <table>
             <thead>
@@ -561,12 +559,12 @@
             </thead>
             <tbody>
               <tr><td><code>skillrack list</code></td><td>列出全部技能（默认命令）</td></tr>
-              <tr><td><code>skillrack add &lt;skill&gt;</code></td><td>安装本仓库技能（交互式选宿主）</td></tr>
-              <tr><td><code>skillrack add &lt;repo&gt; --skill &lt;name&gt;</code></td><td>从 GitHub 仓库安装</td></tr>
+              <tr><td><code>skillrack add &lt;skill&gt;</code></td><td>安装本仓库技能；未指定范围时只问一次</td></tr>
+              <tr><td><code>skillrack add &lt;repo&gt; [--skill a,b]</code></td><td>从 GitHub 仓库安装，多技能可一次勾选</td></tr>
               <tr><td><code>skillrack add &lt;path&gt;</code></td><td>安装本地技能目录</td></tr>
-              <tr><td><code>skillrack agents</code></td><td>列出 77 个宿主与本机检测结果</td></tr>
+              <tr><td><code>skillrack paths</code></td><td>两个安装目录、各自已装技能数与常用命令</td></tr>
               <tr><td><code>skillrack info &lt;skill&gt;</code></td><td>详情、体积、安装命令</td></tr>
-              <tr><td><code>skillrack remove &lt;skill&gt;</code></td><td>卸载（项目级 + 用户级都搜）</td></tr>
+              <tr><td><code>skillrack remove &lt;skill&gt;</code></td><td>卸载（项目级 + 全局都搜）</td></tr>
             </tbody>
           </table>
         </div>
@@ -578,11 +576,13 @@
               <tr><th>选项</th><th>说明</th></tr>
             </thead>
             <tbody>
-              <tr><td><code>--agent, -a</code></td><td>直接指定宿主，逗号分隔；<code>all</code> / <code>detected</code> 为特殊值</td></tr>
-              <tr><td><code>--to, -t</code></td><td>装到自定义目录，跳过宿主选择</td></tr>
-              <tr><td><code>--global, -g</code></td><td>用宿主的用户级目录，所有项目可用</td></tr>
-              <tr><td><code>--skill, -s</code></td><td>指定技能名（远程仓库必填）</td></tr>
+              <tr><td><code>--project</code></td><td>装到本项目 <code>.agent/skills</code>，跳过范围询问</td></tr>
+              <tr><td><code>--global, -g</code></td><td>装到全局 <code>~/.agent/skills</code>，所有项目可用</td></tr>
+              <tr><td><code>--target, --to, -t</code></td><td>装到自定义目录，优先级最高</td></tr>
+              <tr><td><code>--skill, -s</code></td><td>指定技能名，远程仓库可用逗号选多个</td></tr>
               <tr><td><code>--force, -f</code></td><td>覆盖已存在的同名目录</td></tr>
+              <tr><td><code>--dry-run</code></td><td>只打印将写入的位置，不改动磁盘</td></tr>
+              <tr><td><code>--no-input</code></td><td>禁止交互</td></tr>
               <tr><td><code>--branch, -b</code></td><td>指定远程分支或 tag</td></tr>
             </tbody>
           </table>
@@ -623,10 +623,11 @@
         </div>
 
         <p class="label" style="margin-top:20px">安装落位</p>
-        <pre>项目根/.codebuddy/skills/motion-recipes/
+        <pre>项目根/.agent/skills/motion-recipes/     <span class="c"># 默认：本项目</span>
   ├─ SKILL.md
   ├─ references/*.md
-  └─ assets/*</pre>
+  └─ assets/*
+~/.agent/skills/motion-recipes/         <span class="c"># --global：全局</span></pre>
       </section>
 
       <section class="panel" role="tabpanel" id="panel-license" aria-labelledby="tab-license" tabindex="0" hidden>
