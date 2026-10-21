@@ -85,7 +85,7 @@ skillrack add https://github.com/chengzhaobing/skillrack --skill motion-recipes
 
 - 用 CLI 安装：`npm i -g skillrack` 或 `npx skillrack add <skill>`（取 npm 最新版）。
 - 直接从仓库安装：`skillrack add https://github.com/chengzhaobing/skillrack --skill <skill>`。
-- 展示页：<https://chengzhaobing.github.io/skillrack/> ，与 npm 包内 `skills/index.html` 同一份文件。
+- 展示页：<https://chengzhaobing.github.io/skillrack/> ，与仓库根 `index.html` 同一份文件（npm 包内不含展示页）。
 
 ## 仓库结构
 
